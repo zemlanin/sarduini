@@ -1,58 +1,49 @@
+#include "src/states.h"
 #include <Arduboy2.h>
+
+#include "src/starting-positions.h"
 
 Arduboy2 arduboy;
 
-byte gridCursor = 12;
-
-byte workerA1;
-byte workerA2;
-byte workerB1;
-byte workerB2;
-
-bool grid1[25] = {
-    false, false, false, false, false, //
-    false, false, false, false, false, //
-    false, false, false, false, false, //
-    false, false, false, false, false, //
-    false, false, false, false, false, //
-};
-
-bool grid2[25] = {
-    false, false, false, false, false, //
-    false, false, false, false, false, //
-    false, false, false, false, false, //
-    false, false, false, false, false, //
-    false, false, false, false, false, //
-};
-
-bool grid3[25] = {
-    false, false, false, false, false, //
-    false, false, false, false, false, //
-    false, false, false, false, false, //
-    false, false, false, false, false, //
-    false, false, false, false, false, //
-};
-
-bool gridDomes[25] = {
-    false, false, false, false, false, //
-    false, false, false, false, false, //
-    false, false, false, false, false, //
-    false, false, false, false, false, //
-    false, false, false, false, false, //
-};
-
-bool isPlayerAActive = true;
-
-enum state {
-  STARTING_POSITIONS,
-  SELECT_WORKER,
-  MOVE_WORKER,
-  BUILD,
-  END_SCREEN,
-};
-
 state currentState = STARTING_POSITIONS;
 void setState(state newState) { currentState = newState; }
+
+struct Game game = {
+    true,
+    12,
+    -1,
+    -1,
+    -1,
+    -1,
+    {
+        false, false, false, false, false, //
+        false, false, false, false, false, //
+        false, false, false, false, false, //
+        false, false, false, false, false, //
+        false, false, false, false, false, //
+    },
+    {
+        false, false, false, false, false, //
+        false, false, false, false, false, //
+        false, false, false, false, false, //
+        false, false, false, false, false, //
+        false, false, false, false, false, //
+    },
+    {
+        false, false, false, false, false, //
+        false, false, false, false, false, //
+        false, false, false, false, false, //
+        false, false, false, false, false, //
+        false, false, false, false, false, //
+    },
+    {
+        false, false, false, false, false, //
+        false, false, false, false, false, //
+        false, false, false, false, false, //
+        false, false, false, false, false, //
+        false, false, false, false, false, //
+    },
+};
 
 void setup() {
   arduboy.begin();
@@ -60,53 +51,54 @@ void setup() {
   arduboy.setFrameRate(30);
 }
 
-void tickStartingPositions() {
+state tickSelectWorker() {
   if (arduboy.justPressed(A_BUTTON)) {
-    setState(SELECT_WORKER);
+    return MOVE_WORKER;
   }
-}
-void drawStartingPositions() { arduboy.print("starting positions"); }
 
-void tickSelectWorker() {
-  if (arduboy.justPressed(A_BUTTON)) {
-    setState(MOVE_WORKER);
-  }
+  return SELECT_WORKER;
 }
 void drawSelectWorker() { arduboy.print("select worker"); }
 
-void tickMoveWorker() {
+state tickMoveWorker() {
   if (arduboy.justPressed(A_BUTTON)) {
-    setState(BUILD);
+    return BUILD;
   }
 
   if (arduboy.justPressed(B_BUTTON)) {
-    setState(SELECT_WORKER);
+    return SELECT_WORKER;
   }
+
+  return MOVE_WORKER;
 }
 void drawMoveWorker() { arduboy.print("move worker"); }
 
-void tickBuild() {
+state tickBuild() {
   if (arduboy.justPressed(A_BUTTON)) {
-    setState(END_SCREEN);
+    return END_SCREEN;
   }
 
   if (arduboy.justPressed(B_BUTTON)) {
-    setState(MOVE_WORKER);
+    return MOVE_WORKER;
   }
+
+  return BUILD;
 }
 void drawBuild() { arduboy.print("build"); }
 
-void tickEndScreen() {
+state tickEndScreen() {
   if (arduboy.justPressed(A_BUTTON)) {
-    setState(STARTING_POSITIONS);
+    return STARTING_POSITIONS;
   }
+
+  return END_SCREEN;
 }
 void drawEndScreen() { arduboy.print("end screen"); }
 
-void tick() {
+state tick() {
   switch (currentState) {
   case STARTING_POSITIONS:
-    return tickStartingPositions();
+    return tickStartingPositions(arduboy, &game);
   case SELECT_WORKER:
     return tickSelectWorker();
   case MOVE_WORKER:
@@ -116,14 +108,14 @@ void tick() {
   case END_SCREEN:
     return tickEndScreen();
   default:
-    break;
+    return currentState;
   }
 }
 
 void draw() {
   switch (currentState) {
   case STARTING_POSITIONS:
-    return drawStartingPositions();
+    return drawStartingPositions(arduboy, game);
   case SELECT_WORKER:
     return drawSelectWorker();
   case MOVE_WORKER:
@@ -144,7 +136,7 @@ void loop() {
 
   arduboy.pollButtons();
 
-  tick();
+  setState(tick());
 
   arduboy.clear();
   arduboy.setCursor(10, 0);
