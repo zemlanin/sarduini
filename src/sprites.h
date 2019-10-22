@@ -1,3 +1,6 @@
+#include <Arduboy2.h>
+Sprites sprites;
+
 #ifndef SPRITES_H
   #define SPRITES_H
 
@@ -25,5 +28,3 @@
     0x20, 0xe0, 0x68, 0xe0, 0x20
   };
 #endif
-
-void draw(byte x, byte y, const uint8_t *bitmap);
