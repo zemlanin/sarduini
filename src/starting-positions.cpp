@@ -1,5 +1,6 @@
 #include <Arduboy2.h>
 #include "./states.h"
+#include "./sprites.h"
 
 enum innerState {
   PLAYER_A_WORKER1,
@@ -110,11 +111,13 @@ void drawStartingPositions(Arduboy2 arduboy, Game game) {
       arduboy.print("PLAYER_A_WORKER1");
       arduboy.setCursor(10, 20);
       arduboy.print(game.gridCursor);
+      draw(40, 40, PLAYER_A);
       break;
     case PLAYER_A_WORKER2:
       arduboy.print("PLAYER_A_WORKER2");
       arduboy.setCursor(10, 20);
       arduboy.print(game.gridCursor);
+      draw(40, 40, PLAYER_A);
       break;
     case PLAYER_A_CONFIRM:
       arduboy.print("PLAYER_A_CONFIRM");
@@ -123,11 +126,13 @@ void drawStartingPositions(Arduboy2 arduboy, Game game) {
       arduboy.print("PLAYER_B_WORKER1");
       arduboy.setCursor(10, 20);
       arduboy.print(game.gridCursor);
+      draw(40, 40, PLAYER_B);
       break;
     case PLAYER_B_WORKER2:
       arduboy.print("PLAYER_B_WORKER2");
       arduboy.setCursor(10, 20);
       arduboy.print(game.gridCursor);
+      draw(40, 40, PLAYER_B);
       break;
     case PLAYER_B_CONFIRM:
       arduboy.print("PLAYER_B_CONFIRM");
