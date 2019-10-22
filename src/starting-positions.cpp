@@ -1,6 +1,6 @@
-#include <Arduboy2.h>
-#include "./states.h"
 #include "./sprites.h"
+#include "./states.h"
+#include <Arduboy2.h>
 
 enum innerState {
   PLAYER_A_WORKER1,

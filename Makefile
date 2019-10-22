@@ -2,4 +2,4 @@
 
 .PHONY: fmt
 fmt:
-	clang-format -i sarduini.ino
+	clang-format -i sarduini.ino src/*.cpp src/*.h
